@@ -1,6 +1,8 @@
 package com.students.students_management.controller;
 
 import com.students.students_management.domain.Student;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
@@ -18,18 +20,18 @@ public class StudentController {
     ));
 
     @GetMapping
-    public List<Student> getStudents() {
-        return students;
+    public ResponseEntity<List<Student>> getStudents() {
+        return ResponseEntity.ok(students);
     }
 
     @GetMapping("/{email}")
-    public Student getByEmail(@PathVariable String email) {
+    public ResponseEntity<Object> getByEmail(@PathVariable String email) {
         for (Student s : students) {
             if (s.getEmail().equalsIgnoreCase(email)) {
-                return s;
+                return ResponseEntity.ok(s);
             }
         }
-        return null;
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Estudiante no encontrado con email : " + email);
     }
 
     @PostMapping
@@ -74,11 +76,11 @@ public class StudentController {
     }
 
     @DeleteMapping("/{id}")
-    public Student deleteStudent(@PathVariable int id) {
+    public ResponseEntity<Student> deleteStudent(@PathVariable int id) {
         for(Student s : students){
             if(s.getId() == id){
                 students.remove(s);
-                return s;
+                return ResponseEntity.ok(s);
             }
         }
         return null;
