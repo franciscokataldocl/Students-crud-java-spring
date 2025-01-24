@@ -1,8 +1,6 @@
 package com.students.students_management.controller;
 
 import com.students.students_management.domain.Student;
-import org.apache.coyote.Response;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
