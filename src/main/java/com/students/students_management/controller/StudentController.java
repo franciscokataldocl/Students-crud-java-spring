@@ -1,6 +1,7 @@
 package com.students.students_management.controller;
 
 import com.students.students_management.domain.Student;
+import org.apache.coyote.Response;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -31,59 +32,61 @@ public class StudentController {
                 return ResponseEntity.ok(s);
             }
         }
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Estudiante no encontrado con email : " + email);
+        return ResponseEntity.notFound().build();
     }
 
     @PostMapping
-    public Student createStudent(@RequestBody Student s) {
+    public ResponseEntity<Student> createStudent(@RequestBody Student s) {
         students.add(s);
-        return s;
+        return ResponseEntity.noContent().build();
+    }
+
+
+    @PatchMapping
+    public ResponseEntity<Object> patchStudent(@RequestBody Student patchedStudent) {
+        for (Student s : students) {
+            if (s.getId() == patchedStudent.getId()) {
+                if (patchedStudent.getNombre() != null) {
+                    s.setNombre(patchedStudent.getNombre());
+                }
+                if (patchedStudent.getEmail() != null) {
+                    s.setEmail(patchedStudent.getEmail());
+                }
+                if (patchedStudent.getEdad() != s.getEdad() && patchedStudent.getEdad() != 0) {
+                    s.setEdad(patchedStudent.getEdad());
+                }
+                if (patchedStudent.getCurso() != s.getCurso() && patchedStudent.getCurso() != 0) {
+                    s.setCurso(patchedStudent.getCurso());
+                }
+                return ResponseEntity.noContent().build();
+            }
+
+        }
+        return ResponseEntity.notFound().build();
+
     }
 
     @PutMapping
-    public Student updateStudent(@RequestBody Student updatedStudent) {
+    public ResponseEntity<Object> updateStudent(@RequestBody Student updatedStudent) {
         for (int i = 0; i < students.size(); i++) {
-            if(students.get(i).getId() == updatedStudent.getId()) {
+            if (students.get(i).getId() == updatedStudent.getId()) {
                 updatedStudent.setId(students.get(i).getId());
                 students.set(i, updatedStudent);
-                return updatedStudent;
+                return ResponseEntity.noContent().build();
             }
         }
-        return null;
-    }
-
-    @PatchMapping
-    public Student patchStudent(@RequestBody Student patchedStudent){
-        for(Student s : students){
-            if(s.getId() == patchedStudent.getId()) {
-                    if(patchedStudent.getNombre() != null){
-                        s.setNombre(patchedStudent.getNombre());
-                    }
-                    if(patchedStudent.getEmail() != null){
-                        s.setEmail(patchedStudent.getEmail());
-                    }
-                    if(patchedStudent.getEdad() != s.getEdad() && patchedStudent.getEdad() != 0){
-                        s.setEdad(patchedStudent.getEdad());
-                    }
-                    if(patchedStudent.getCurso() != s.getCurso() && patchedStudent.getCurso() != 0){
-                        s.setCurso(patchedStudent.getCurso());
-                    }
-                    return s;
-            }
-
-        }
-        return null;
+        return ResponseEntity.notFound().build();
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Student> deleteStudent(@PathVariable int id) {
-        for(Student s : students){
-            if(s.getId() == id){
+    public ResponseEntity<Object> deleteStudent(@PathVariable int id) {
+        for (Student s : students) {
+            if (s.getId() == id) {
                 students.remove(s);
-                return ResponseEntity.ok(s);
+                return ResponseEntity.noContent().build();
             }
         }
-        return null;
+        return ResponseEntity.notFound().build();
     }
 
 }
