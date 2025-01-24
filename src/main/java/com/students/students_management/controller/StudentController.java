@@ -3,7 +3,9 @@ package com.students.students_management.controller;
 import com.students.students_management.domain.Student;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -36,7 +38,13 @@ public class StudentController {
     @PostMapping
     public ResponseEntity<Object> createStudent(@RequestBody Student s) {
         students.add(s);
-        return ResponseEntity.ok().body("Usuario creado con " + "nombre: " + s.getNombre() + " email: " + s.getEmail());
+        //mostrar uri de recurso creado
+        URI location = ServletUriComponentsBuilder
+                .fromCurrentRequest()
+                .path("/{email}")
+                .buildAndExpand(s.getEmail())
+                .toUri();
+        return ResponseEntity.created(location).build();
     }
 
 
