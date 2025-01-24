@@ -34,9 +34,9 @@ public class StudentController {
     }
 
     @PostMapping
-    public ResponseEntity<Student> createStudent(@RequestBody Student s) {
+    public ResponseEntity<Object> createStudent(@RequestBody Student s) {
         students.add(s);
-        return ResponseEntity.noContent().build();
+        return ResponseEntity.ok().body("Usuario creado con " + "nombre: " + s.getNombre() + " email: " + s.getEmail());
     }
 
 
@@ -56,7 +56,7 @@ public class StudentController {
                 if (patchedStudent.getCurso() != s.getCurso() && patchedStudent.getCurso() != 0) {
                     s.setCurso(patchedStudent.getCurso());
                 }
-                return ResponseEntity.noContent().build();
+                return ResponseEntity.ok().body("Usuario con id: " + patchedStudent.getId() + " actualizado correctamente");
             }
 
         }
@@ -70,7 +70,7 @@ public class StudentController {
             if (students.get(i).getId() == updatedStudent.getId()) {
                 updatedStudent.setId(students.get(i).getId());
                 students.set(i, updatedStudent);
-                return ResponseEntity.noContent().build();
+                return ResponseEntity.ok().body("Usuario con id: " + updatedStudent.getId() + " actualizado con éxito");
             }
         }
         return ResponseEntity.notFound().build();
@@ -81,7 +81,7 @@ public class StudentController {
         for (Student s : students) {
             if (s.getId() == id) {
                 students.remove(s);
-                return ResponseEntity.noContent().build();
+                return ResponseEntity.ok().body("Usuario con id: " + id + " eliminado");
             }
         }
         return ResponseEntity.notFound().build();
